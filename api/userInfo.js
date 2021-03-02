@@ -49,7 +49,6 @@ exports.login = async (req, res, next) => {
     let r = await UserModel.find({
         username: body.username
     });
-    console.log(r);
     if (r?.length === 0) {
         res.json({
             isSuccess: false,
@@ -68,13 +67,12 @@ exports.login = async (req, res, next) => {
     }
     if (r[0].password === body.password) {
         let token = util.encrypt(r[0].id + '@' + new Date());
-        console.log('token', token);
+        // console.log('token', token);
         UserModel.findOneAndUpdate({
             id: new mongoose.Types.ObjectId(r[0].id)
         }, {
             token: token
         }, err => {
-            console.log('@@@@@@@@@@@err', err);
             if (!err) {
                 res.json(util.resJson({
                     isSuccess: true,

@@ -1,4 +1,5 @@
 var ArticleModel = require('../models/articleModel');
+var UserModel = require('../models/userModel');
 var util = require('../utils/util');
 var mongoose = require('mongoose');
 
@@ -35,19 +36,16 @@ exports.createNotes = async (req, res, next) => {
 /*保存更新文章*/
 exports.saveNotes = async (req, res, next) => {
     let body = req.body;
-    console.log('@@@@@@@@@@@@@@@@',req.params);
     let {articleId} = req.params
-    console.log(articleId);
-    console.log('=========================================================');
     let r = await ArticleModel.update({
         articleId
     }, {
+        userId: body.userId,
         title: body.title,
         content: body.content,
         htmlContent: body.htmlContent,
         articleId
     }, function (err, r) {
-        console.log(r);
         if (!err) {
             res.json(util.resJson({
                 isSuccess: true,
@@ -67,14 +65,13 @@ exports.saveNotes = async (req, res, next) => {
     });
 };
 
-/*获取更新文章*/
+/*获取文章列表*/
 exports.getList = async (req, res, next) => {
     let body = req.body;
     let total = 0;
     let pageNum = parseInt(req.query.pageNum) || 1
     let pageSize = parseInt(req.query.pageSize) || 10
     let skip = (pageNum - 1) * pageSize
-    console.log('=========================================================');
     ArticleModel.count({}, (err, count) => {
         if (err) next(err);
         total = count
@@ -82,7 +79,6 @@ exports.getList = async (req, res, next) => {
             .skip(skip)
             .limit(pageSize)
             .exec((err, data) => {
-            console.log(data)
             let count = data.length
             let pageCount = Math.ceil(count / pageSize);
 
@@ -106,29 +102,46 @@ exports.getList = async (req, res, next) => {
     })
 };
 
-
+/*获取文章*/
 exports.getArticle = async (req, res, next) => {
     let body = req.body;
     let {articleId} = req.params
-    let r = await ArticleModel.findOne({
-        articleId
-    }, function (err, r) {
-        console.log(r);
-        if (!err) {
-            res.json(util.resJson({
-                isSuccess: true,
-                message: '保存成功',
-                data: {
-                    content: r.content,
-                    htmlContent: r.htmlContent
+    let {userId} = req.body
+    let user = await UserModel.findOne({
+        userId
+    }, function (err,rr) {
+        if(!err){
+            ArticleModel.findOne({
+                articleId
+            }, function (err, r) {
+                if (!err) {
+                    res.json(util.resJson({
+                        isSuccess: true,
+                        message: '成功',
+                        data: {
+                            userInfo:{
+                                username: user.username,
+                                userId: r.userId,
+                            },
+                            title: r.title,
+                            content: r.content,
+                            htmlContent: r.htmlContent
+                        }
+                    }))
+                } else {
+                    res.json(util.resJson({
+                        isSuccess: false,
+                        message: '失败',
+                        data: null
+                    }))
                 }
-            }))
-        } else {
+            });
+        }else{
             res.json(util.resJson({
                 isSuccess: false,
-                message: '保存失败',
+                message: '失败',
                 data: null
             }))
         }
-    });
+    })
 };

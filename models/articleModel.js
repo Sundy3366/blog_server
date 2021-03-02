@@ -12,10 +12,14 @@ var schema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    userInfo: {
+        userId: Schema.Types.ObjectId,
+        userName: String
+    },
     article: String,
     content: {type: String, default: ''},
     htmlContent: {type: String, default: ''},
-    view:{
+    view: {
         type: Number,
         default: 0
     },
@@ -34,6 +38,7 @@ var schema = new Schema({
         type: Array,
         default: []
     },
+    userId: Schema.Types.ObjectId,
 });
 
 module.exports = mongoose.model('articleModel', schema);

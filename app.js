@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require("cors");
 // var indexRouter = require('./routes/index');
 // var monitorRouter = require('./routes/monitor');
 // var upDataRouter = require('./routes/upData');
@@ -39,7 +40,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cors({
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+}))
 //cors
 app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -49,13 +55,8 @@ app.all('*', function (req, res, next) {
     if (req.method == "OPTIONS") res.sendStatus(200); /*让options请求快速返回*/
     else next();
 });
-
-
-// app.use('/', indexRouter);
-// app.use('/Monitor/', util.resolveToken, monitorRouter);
-// app.use('/Up', upDataRouter);
 app.use('/User', userRouter);
-app.use('/Article', articleRouter);
+app.use('/Article',  articleRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
