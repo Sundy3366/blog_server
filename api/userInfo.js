@@ -121,3 +121,83 @@ exports.login = async (req, res, next) => {
 
     })
 };
+
+
+exports.update = async (req, res, next) => {
+    let body = req.body;
+    let {userId} = req.body
+    let r = await UserModel.findOneAndUpdate({
+        id: userId
+    }, {
+        prefix: body.prefix,
+        email: body.email,
+        introduction: body.introduction,
+        nickname: body.nickname,
+        phone: body.phone,
+        residence: body.residence,
+        website: body.website
+    }, function (err, r) {
+        if (!err) {
+            res.send({
+                code: 1,
+                isSuccess: true,
+                message: '请求成功',
+                data: null
+            })
+        } else {
+            res.send({
+                code: 0,
+                isSuccess: false,
+                message: err,
+                data: null
+            })
+        }
+    });
+}
+
+//获取用户信息
+exports.getUserInfo = async (req, res, next) => {
+    // let body = req.body;
+    let {id} = req.params
+    UserModel.findOne({
+        id
+    }, function (err, r) {
+        if (!err) {
+            res.json(util.resJson({
+                isSuccess: true,
+                message: '成功',
+                data: r
+            }))
+        } else {
+            res.json(util.resJson({
+                isSuccess: false,
+                message: '失败',
+                data: null
+            }))
+        }
+    });
+};
+
+exports.updateAvatar = async (req, res, next) =>{
+    let body = req.body;
+    let {id} = req.params;
+    UserModel.findOneAndUpdate({
+        id
+    }, {
+        avatar: body.avatar
+    }, function (err, r) {
+        if (!err) {
+            res.json(util.resJson({
+                isSuccess: true,
+                message: '成功',
+                // data: r
+            }))
+        } else {
+            res.json(util.resJson({
+                isSuccess: false,
+                message: '失败',
+                data: null
+            }))
+        }
+    });
+}

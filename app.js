@@ -9,6 +9,7 @@ var cors = require("cors");
 // var upDataRouter = require('./routes/upData');
 var userRouter = require('./routes/user');
 var articleRouter = require('./routes/article');
+var uploadRouter = require('./routes/upload');
 // var ScheduleTask = require('./business/scheduleTask');
 
 var util = require("./utils/util");
@@ -57,6 +58,7 @@ app.all('*', function (req, res, next) {
 });
 app.use('/User', userRouter);
 app.use('/Article',  articleRouter);
+app.use('/Upload',  uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

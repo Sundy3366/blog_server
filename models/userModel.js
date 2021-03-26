@@ -7,7 +7,13 @@ var schema = new Schema({
     isActive: {type: Boolean, default: false},
     createTime: {type: Date, default: Date.now},
     id: Schema.Types.ObjectId,
-    token: String
+    token: String,
+    email: String,
+    prefix: String,
+    introduction: String,
+    nickname: String,
+    residence: Array,
+    website: String
 });
 
 module.exports = mongoose.model('UserDataInfo', schema);
