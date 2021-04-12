@@ -13,7 +13,8 @@ var schema = new Schema({
     introduction: String,
     nickname: String,
     residence: Array,
-    website: String
+    website: String,
+    avatar: String
 });
 
 module.exports = mongoose.model('UserDataInfo', schema);
